@@ -1,0 +1,23 @@
+step,stage,action,rows_affected,reason
+1,Format,"Renamed 7 kept CPCB columns from 'NAME (unit)' to short names; dropped the other 18 columns (gases, VOCs, rain, radiation, pressure)",315648,"Units belong in the data dictionary, not in column names; the dropped variables are not part of the question"
+2,Dates,"Parsed CPCB 'Timestamp' text into datetime (IST, start of hour)",315648,Text dates cannot be sorted or joined; 0 values failed to parse
+3,Scope,Kept only 15 Sep - 30 Nov of each year (CPCB),249120,Outside the study window
+4,Scope,Kept only the PM2.5 parameter from OpenAQ,723420,Other pollutants and weather are outside the question
+5,Time zones,Converted OpenAQ ISO timestamps (with +05:30 offset) to plain IST to match CPCB,80525,The two sources must use the same clock before they can be compared
+6,Names,Removed the numeric suffix (e.g. '-3379575') and 'New Delhi' -> 'Delhi' in OpenAQ station names,80525,So that names can be compared with CPCB's spelling
+7,Duplicates,Dropped exact duplicate OpenAQ readings (same sensor and time),0,A reading should appear once
+8,Scope,Kept only 15 Sep - 30 Nov 2025 (OpenAQ),1981,Outside the study window
+9,Units,Averaged OpenAQ 15-minute readings into hourly means,56639,CPCB reports hourly averages; both sources need the same time step
+10,Units,Converted CPCB station wind speed from m/s to km/h (x 3.6),48865,Open-Meteo wind is in km/h; one unit per quantity
+11,Duplicates,Checked CPCB for repeated station-hours,0,Each station-hour should appear once
+12,Duplicates,Cross-source: OpenAQ hours that duplicate a CPCB value for the same station-hour were dropped (CPCB kept),20120,"Same station, same hour, same measurement in two sources"
+13,Duplicates,OpenAQ location 11607 matched no CPCB station and was dropped,1585,Not one of our stations
+14,Missing values,Filled empty CPCB hours (2025) with the matched OpenAQ hourly mean,200,Same instrument's data published through a second channel
+15,Duplicates,"Merged 'Pusa, Delhi - DPCC' and 'Pusa, Delhi - IITM' into one site 'pusa' (hourly mean of the two)",5544,Same location under two names; keeping both would double-count the site
+16,Outliers,Set PM2.5 to missing where flag = impossible_value,55,PM2.5 of zero or below cannot be real
+17,Outliers,Set PM2.5 to missing where flag = stuck,43,Frozen sensor: same value 4+ hours
+18,Outliers,Set PM2.5 to missing where flag = isolated_spike,28,Single-station jump not seen elsewhere
+19,Outliers,Kept city-wide high values (flag = citywide_high_kept),154,"Real events seen at many stations at once (Diwali nights, smog episodes)"
+20,Outliers,Flagged (not changed) hours where PM2.5 exceeds PM10 by more than 10 ug/m3,70,"Physically impossible if both are right; the two run on separate instruments so we cannot tell which is wrong - PM2.5 kept, PM10 not used in analysis"
+21,Missing values,Linear interpolation of PM2.5 gaps of 3 hours or less,482,Short gaps in a smooth series; data are MAR
+22,Missing values,Left longer PM2.5 gaps empty (not imputed),1487,Filling long gaps would invent data and could hide or create peaks

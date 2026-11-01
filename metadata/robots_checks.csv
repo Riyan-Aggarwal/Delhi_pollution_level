@@ -1,0 +1,8 @@
+host,status,robots.txt,checked_utc
+https://api.openaq.org,404,(no robots.txt published),2026-10-31T21:15:30Z
+https://openaq-data-archive.s3.amazonaws.com,404,(no robots.txt published),2026-10-31T21:15:31Z
+https://archive-api.open-meteo.com,200,"User-agent: *
+Disallow: /",2026-10-31T21:15:32Z
+https://open-meteo.com,200,"User-agent: *
+Allow: /",2026-10-31T21:15:33Z
+https://airquality.cpcb.gov.in,404,(no robots.txt published),2026-10-31T21:15:33Z

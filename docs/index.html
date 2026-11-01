@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diwali, Stubble and Delhi's Air</title>
+<meta name="description" content="How much of Delhi's October-November PM2.5 rise comes from Diwali night, and how much from the season? Hourly data from 11 CPCB stations, 2023-2025.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --haze: #edf0f3;        /* page: the colour of a smoggy sky */
+    --paper: #ffffff;       /* chart surfaces */
+    --ink: #1c242c;         /* text */
+    --ink-2: #4d5761;       /* secondary text */
+    --rule: #d3d9df;        /* hairlines */
+    --smog: #104281;        /* deep blue from the charts */
+    --spark: #eb6834;       /* the one highlight: Diwali */
+    --measure: 68ch;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--haze); color: var(--ink);
+    font-family: "Public Sans", "Segoe UI", system-ui, sans-serif;
+    font-size: 17px; line-height: 1.6; font-variant-numeric: tabular-nums;
+  }
+  a { color: var(--smog); text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--spark); outline-offset: 2px; }
+
+  /* top navigation */
+  nav.top {
+    position: sticky; top: 0; z-index: 10; background: rgba(237,240,243,.94);
+    backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule);
+  }
+  nav.top .inner { max-width: 1080px; margin: 0 auto; padding: 0 16px; display: flex; gap: 22px; align-items: center; height: 52px; overflow-x: auto; }
+  nav.top .brand { font-weight: 800; white-space: nowrap; margin-right: auto; color: var(--ink); text-decoration: none; }
+  nav.top a.sec { color: var(--ink-2); text-decoration: none; font-size: 15px; white-space: nowrap; padding: 4px 0; border-bottom: 2px solid transparent; }
+  nav.top a.sec:hover, nav.top a.sec.on { color: var(--ink); border-bottom-color: var(--spark); }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 0 16px 80px; }
+
+  /* hero */
+  header.hero { padding: 56px 0 24px; }
+  header.hero h1 {
+    font-size: clamp(34px, 5.4vw, 60px); line-height: 1.04; font-weight: 800; letter-spacing: -0.02em;
+    margin: 0 0 18px; max-width: 18ch;
+  }
+  header.hero .lede { font-size: 20px; color: var(--ink-2); max-width: var(--measure); margin: 0 0 28px; }
+  .night {
+    background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 18px 18px 8px;
+  }
+  .night .cap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; font-size: 15px; color: var(--ink-2); }
+  .night .cap strong { color: var(--ink); }
+  #hero-chart { height: 260px; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin-top: 18px; }
+  .facts div { background: var(--paper); padding: 16px 18px; }
+  .facts b { display: block; font-size: 30px; font-weight: 800; line-height: 1.1; }
+  .facts span { font-size: 15px; color: var(--ink-2); }
+  .facts b.spark { color: #c4501f; }
+  @media (max-width: 720px) { .facts { grid-template-columns: 1fr; } }
+
+  /* sections */
+  section { padding-top: 48px; }
+  section > h2 { font-size: 30px; line-height: 1.15; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 14px; padding-top: 18px; border-top: 3px solid var(--ink); }
+  section > p, section > ul, section > ol, .prose { max-width: var(--measure); }
+  h3 { font-size: 20px; margin: 36px 0 8px; }
+  p { margin: 0 0 14px; }
+  .note { color: var(--ink-2); font-size: 15px; }
+
+  figure.chart { margin: 18px 0 30px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 10px 4px; }
+  figure.chart .plot { width: 100%; min-height: 380px; }
+  figure.chart figcaption { padding: 6px 8px 12px; max-width: var(--measure); font-size: 16px; }
+  figure.chart figcaption b { font-weight: 600; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-weight: 600; background: #f6f7f9; }
+  td.n, th.n { text-align: right; }
+  tr:last-child td { border-bottom: 0; }
+  .tablewrap { overflow-x: auto; margin: 14px 0 22px; }
+
+  .answer { background: var(--paper); border-left: 6px solid var(--spark); padding: 18px 22px; border-radius: 0 6px 6px 0; max-width: 80ch; font-size: 18px; }
+  .answer p:last-child { margin: 0; }
+
+  footer { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; color: var(--ink-2); font-size: 14px; border-top: 1px solid var(--rule); }
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Sections">
+  <div class="inner">
+    <a class="brand" href="#top">Delhi's air at Diwali</a>
+    <a class="sec" href="#intro">Introduction</a>
+    <a class="sec" href="#data">Data and methods</a>
+    <a class="sec" href="#results">Results</a>
+    <a class="sec" href="#conclusion">Conclusion</a>
+    <a class="sec" href="#limits">Limitations</a>
+    <a class="sec" href="#credits">Attributions</a>
+  </div>
+</nav>
+
+<main id="top">
+  <header class="hero">
+    <h1>Diwali night is the spike. The season is the smog.</h1>
+    <p class="lede">Every autumn Delhi's air turns grey, and every year Diwali gets the blame. We measured how much of the October–November rise in fine-particle pollution (PM2.5) comes from Diwali night, and how much from the season itself, using hourly data from 11 government monitoring stations over three Diwalis (2023, 2024, 2025).</p>
+
+    <div class="night">
+      <div class="cap">
+        <span><strong>Diwali night 2025</strong>, city-wide PM2.5, hour by hour</span>
+        <span>Peak <strong>1,331 µg/m³</strong> at 2 am on 21 Oct, about 22 times India's 24-hour limit of 60</span>
+      </div>
+      <div id="hero-chart" role="img" aria-label="Line chart of city-wide PM2.5 from 18 to 23 October 2025, flat near 100 to 300 and spiking to 1,331 on Diwali night"></div>
+    </div>
+
+    <div class="facts">
+      <div><b>+130 µg/m³</b><span>average rise from late September to October–November, almost identical in all three years</span></div>
+      <div><b class="spark">1–4%</b><span>of that rise is due to Diwali night: a huge spike, but only 12 hours long</span></div>
+      <div><b>89–95%</b><span>of October–November days were above India's 24-hour PM2.5 standard</span></div>
+    </div>
+  </header>
+
+  <section id="intro">
+    <h2>Introduction</h2>
+    <p>Delhi's air quality collapses every October and November. Two explanations dominate the news: <b>Diwali fireworks</b> and the <b>season</b>, meaning colder, stiller air that traps pollution near the ground, plus smoke from crop-residue (stubble) burning in Punjab and Haryana.</p>
+    <p><b>Our question:</b> how much of the October–November PM2.5 rise in Delhi comes from Diwali night, and how much from the season's weather?</p>
+    <p>PM2.5 means particles smaller than 2.5 micrometres, small enough to reach deep into the lungs. It is measured in micrograms per cubic metre (µg/m³). India's 24-hour standard is 60 µg/m³; the WHO guideline is 15.</p>
+  </section>
+
+  <section id="data">
+    <h2>Data and methods</h2>
+    <h3>Three sources</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Source</th><th>What we used</th><th>How we got it</th><th>Accessed</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://airquality.cpcb.gov.in/ccr/#/repository/data">CPCB CAAQMS Data Repository</a></td><td>Hourly PM2.5 and station weather, 12 Delhi stations, 2023–2025 (36 yearly files)</td><td>Downloaded by hand (the site uses a captcha): Delhi → Delhi → station → 1H</td><td>1 Nov 2026</td></tr>
+        <tr><td><a href="https://docs.openaq.org/aws/quick-start">OpenAQ</a> (API v3 + S3 archive)</td><td>Station list; 15-minute PM2.5 for 2025 (1,008 daily files)</td><td>Python script with a free API key</td><td>1 Nov 2026</td></tr>
+        <tr><td><a href="https://open-meteo.com/en/docs/historical-weather-api">Open-Meteo Historical Weather API</a></td><td>Hourly temperature, humidity, rain, wind, pressure and boundary-layer height for central Delhi</td><td>Python script (3 calls)</td><td>1 Nov 2026</td></tr>
+      </tbody>
+    </table></div>
+    <p><b>Why two PM2.5 sources?</b> The project brief names OpenAQ, but OpenAQ holds <b>no</b> Delhi government-station data between late 2022 and February 2025, so only the 2025 Diwali was there. We went to the original publisher, CPCB, for all three years and kept OpenAQ for 2025 as a cross-check.</p>
+    <p><b>Study window:</b> 15 September to 30 November each year. Late September is the "before the season" baseline. Diwali night means 18:00 on Diwali day to 06:00 the next morning.</p>
+
+    <h3>Cleaning, in brief</h3>
+    <ul>
+      <li><b>Formats:</b> renamed columns with units in their names, parsed text dates, converted OpenAQ's UTC-offset times to IST and its 15-minute readings to hourly means, and converted station wind from m/s to km/h.</li>
+      <li><b>Duplicates across sources:</b> matched each CPCB station to its OpenAQ twin by comparing values hour by hour, because names differ ("Pusa, Delhi - IMD" vs "Pusa, Delhi - IITM"). Then dropped 20,120 duplicate OpenAQ hours.</li>
+      <li><b>Same site, two names:</b> merged the two Pusa monitors (same coordinates) into one site, leaving 11.</li>
+      <li><b>Outliers:</b> removed 55 impossible values (zero or negative), 43 hours of stuck sensors and 28 isolated single-station spikes. <b>Kept</b> 154 extreme hours that many stations recorded at once, such as Diwali nights; they are real.</li>
+      <li><b>Missing values:</b> under 3% of hours. They are linked to station and season, not to how dirty the air was (MAR). Gaps of up to 3 hours were interpolated (482 hours); longer gaps were left empty (1,487 hours, 2.4%).</li>
+    </ul>
+    <p class="note">Every step, with the number of rows affected, is in the <a href="https://github.com/Riyan-Aggarwal/Delhi_pollution_level/blob/main/metadata/cleaning_log.csv">cleaning log</a>. The full code is in the <a href="https://github.com/Riyan-Aggarwal/Delhi_pollution_level/tree/main/notebooks">three notebooks</a>.</p>
+
+    <figure class="chart"><div class="plot" id="fig8_before_after"></div>
+      <figcaption><b>Before and after cleaning.</b> At ITO in late November 2025, the raw data contains runs of PM2.5 = 0.00 for several hours in the middle of a polluted week, which is physically impossible. These hours were set to missing, and the rest of the series is unchanged.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig9_source_agreement"></div>
+      <figcaption><b>Checking the two PM2.5 sources against each other (2025).</b> For 11 of the 12 stations, OpenAQ's hourly averages equal CPCB's in at least 80% of hours (8 stations reach 99–100%), so OpenAQ republishes CPCB's data rather than measuring separately. Pusa (IITM) agrees in only 16% of hours but is still clearly the same station (correlation 0.98, mean difference 5.5 µg/m³).</figcaption></figure>
+
+    <h3>How we answer the question</h3>
+    <ol>
+      <li><b>Seasonal rise:</b> city-wide average PM2.5 in October–November minus the 15–30 September average.</li>
+      <li><b>Weather's part:</b> two simple regression models of daily PM2.5 on weather. A <i>ventilation-only</i> model (mixing height, wind) gives a lower estimate. A <i>full-weather</i> model (adding temperature and humidity) gives an upper estimate. We then ask how much rise each predicts from the weather alone.</li>
+      <li><b>Diwali night's part:</b> Diwali-night PM2.5 minus (a) the nights 2–7 days either side, and (b) what that night's weather predicts. We spread the 12-hour excess over the 1,464 hours of October–November to get its share of the seasonal rise.</li>
+    </ol>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+
+    <figure class="chart"><div class="plot" id="fig1_monthly_distribution"></div>
+      <figcaption>The typical (median) hourly PM2.5 goes from about <b>45–48 µg/m³ in late September</b> to <b>90–101 in October</b> and <b>230–255 in November</b>, the same staircase in all three years. Even late September sits close to India's limit of 60; by November, almost every hour is several times above it.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig2_season_daily"></div>
+      <figcaption>Daily averages climb from mid-October whatever the date of Diwali. The worst day of 2024 was <b>18 November (600 µg/m³)</b>, more than two weeks after Diwali. Diwali day itself (orange dots) is not the peak, because the fireworks smoke builds up after midnight: in 2025 the highest daily average, 504, was the day <i>after</i> Diwali.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig4_diwali_hourly"></div>
+      <figcaption>Diwali night is unmistakable. City-wide PM2.5 peaked at <b>679 (2023)</b>, <b>650 (2024)</b> and <b>1,331 µg/m³ (2025)</b> around midnight to 2 am, then fell back below 200 by late morning. The spike is intense but short, which matters for the answer.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig5_diwali_vs_expected"></div>
+      <figcaption>Diwali night averaged <b>463, 382 and 785 µg/m³</b>, compared with 271, 209 and 142 on the surrounding nights. 2025 stands out because the surrounding nights were relatively clean, yet Diwali night was <b>8.4 times</b> what its weather predicted. In 2023 the weather was already very still, so the night was "only" 1.8 times the weather-expected level.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig7_station_excess"></div>
+      <figcaption>Across stations, the Diwali-night jump over neighbouring nights ranged from <b>−71 to +421 µg/m³ in 2023</b> and from <b>+152 to +1,003 in 2025</b>. The two stations on the city's outer edge, Narela and Najafgarh, showed almost no jump in 2023 and 2024, which fits fireworks being concentrated in dense residential areas.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig3_weather_scatter"></div>
+      <figcaption>On ordinary days, PM2.5 is strongly linked to <b>temperature (ρ = −0.74)</b> and only weakly to wind (−0.36) and mixing-layer height (−0.21). Temperature also falls steadily through the season while stubble burning and heating rise, so part of this link is "time of year", not weather alone.</figcaption></figure>
+
+    <figure class="chart"><div class="plot" id="fig6_decomposition"></div>
+      <figcaption>The observed seasonal rise was <b>+133, +132 and +126 µg/m³</b>. Ventilation alone (mixing height, wind) predicts only <b>3–41%</b> of it; adding temperature and humidity raises that to <b>72–122%</b>. Diwali night adds just <b>+1.4 to +5.3 µg/m³</b> to the October–November average, which is <b>1.1–4.2%</b> of the rise.</figcaption></figure>
+  </section>
+
+  <section id="conclusion">
+    <h2>Conclusion</h2>
+    <div class="answer">
+      <p><b>Diwali night accounts for about 1–4% of Delhi's October–November PM2.5 rise; the other 96–99% comes with the season.</b></p>
+      <p>Diwali night is the single worst event of the autumn: city-wide PM2.5 reached 679, 650 and 1,331 µg/m³ in 2023, 2024 and 2025, and the night averaged 1.8 to 8.4 times what the weather predicted. But it lasts about 12 hours, while the seasonal rise of roughly 130 µg/m³ lasts two months. Weather explains between a small share (ventilation alone, 3–41%) and nearly all (with temperature, 72–122%) of that seasonal rise. Our data cannot separate colder, stiller air from the stubble smoke and heating that arrive at the same time of year.</p>
+    </div>
+    <p style="margin-top:18px">In plain words: banning fireworks would remove the worst night of the year, which matters for anyone breathing that night, but it would barely change the October–November average. The season, not the festival, is what keeps Delhi's air above the safe limit for two months.</p>
+  </section>
+
+  <section id="limits">
+    <h2>Limitations</h2>
+    <ul>
+      <li><b>No stubble-burning data.</b> We did not measure crop fires, so "the season" mixes weather, stubble smoke, heating and traffic. The weather share is a range, not one number.</li>
+      <li><b>Weather from a model, at one point.</b> Open-Meteo is modelled weather on a grid several kilometres wide, used for the whole city. Station sensors broadly agree on temperature (correlation 0.87), but their wind readings sit on a floor value 40% of the time, so they could not replace it.</li>
+      <li><b>Small number of Diwalis.</b> Three nights cannot give a precise average effect; 2025 behaves very differently from 2023 and 2024.</li>
+      <li><b>Possible capping before 2025.</b> No reading in 2023–2024 exceeds about 1,000 µg/m³, but nine stations went above it at once in 2025. Older peaks may have been capped by the instruments, which would make the 2023–2024 Diwali excess an underestimate.</li>
+      <li><b>Station choice.</b> 12 of the 59 Delhi stations listed by CPCB, chosen to cover all parts of the city (11 sites after merging the two Pusa monitors). A different set could shift city averages slightly.</li>
+      <li><b>Association, not cause.</b> The regressions show which weather goes with dirtier air; they do not prove causes.</li>
+    </ul>
+  </section>
+
+  <section id="credits">
+    <h2>Attributions</h2>
+    <h3>Data</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Source</th><th>Licence / terms</th></tr></thead>
+      <tbody>
+        <tr><td>Central Pollution Control Board (CPCB), CAAQMS Data Repository: data from CPCB, DPCC, IMD and IITM stations</td><td>Government of India public data; no licence stated on the repository page</td></tr>
+        <tr><td>OpenAQ, API v3 and AWS open-data archive</td><td>OpenAQ terms of use (attribution to OpenAQ required; provider licence not stated for these stations)</td></tr>
+        <tr><td>Open-Meteo Historical Weather API (built on ERA5 / Copernicus reanalysis)</td><td>CC BY 4.0, free non-commercial use</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Software</h3>
+    <p>Python, pandas, NumPy, SciPy, statsmodels, Plotly (Python and plotly.js), requests, pyarrow, Jupyter.</p>
+    <h3>Team contributions</h3>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Member</th><th>Contribution</th></tr></thead>
+      <tbody>
+        <tr><td>Riyan Aggarwal</td><td>To be completed</td></tr>
+        <tr><td>Team member 2</td><td>To be completed</td></tr>
+        <tr><td>Team member 3</td><td>To be completed</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</main>
+
+<footer>DA2402 Data Curation and Visualisation, IIT Madras. Code and data: <a href="https://github.com/Riyan-Aggarwal/Delhi_pollution_level">github.com/Riyan-Aggarwal/Delhi_pollution_level</a>.</footer>
+
+<script src="assets/vendor/plotly.min.js"></script>
+<script src="assets/figures.js"></script>
+<script>
+  const CONFIG = { displaylogo: false, responsive: true, modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"] };
+
+  function draw(id) {
+    const el = document.getElementById(id), f = (window.FIGS || {})[id];
+    if (!el) return;
+    if (!f || !window.Plotly) { el.textContent = "Chart could not load. Open this page from the docs folder so assets/ is next to it."; return; }
+    const layout = Object.assign({}, f.layout, { autosize: true });
+    delete layout.width;
+    Plotly.newPlot(el, f.data, layout, CONFIG);
+  }
+
+  // Charts draw when they scroll into view, keeping the first load fast
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { draw(e.target.id); io.unobserve(e.target); } });
+  }, { rootMargin: "300px" });
+  document.querySelectorAll(".plot").forEach((el) => io.observe(el));
+
+  // Hero: the 2025 Diwali-night series from Chart 4, drawn bare
+  (function hero() {
+    const f = (window.FIGS || {}).fig4_diwali_hourly;
+    if (!f || !window.Plotly) return;
+    const t = f.data.find((d) => d.name === "2025");
+    Plotly.newPlot("hero-chart", [Object.assign({}, t, {
+      line: { color: "#104281", width: 2.5 }, showlegend: false, fill: "tozeroy", fillcolor: "rgba(16,66,129,0.08)"
+    })], {
+      margin: { l: 44, r: 10, t: 6, b: 34 }, height: 260, paper_bgcolor: "#fff", plot_bgcolor: "#fff",
+      font: { family: "Public Sans, Segoe UI, sans-serif", size: 12, color: "#4d5761" },
+      xaxis: { range: [-48, 72], tickvals: [-48, -24, 0, 24, 48, 72], ticktext: ["18 Oct", "19 Oct", "20 Oct (Diwali)", "21 Oct", "22 Oct", "23 Oct"], showgrid: false, zeroline: false, linecolor: "#d3d9df" },
+      yaxis: { gridcolor: "#e7e6e2", zeroline: false, title: { text: "µg/m³" } },
+      shapes: [{ type: "rect", x0: 18, x1: 30, y0: 0, y1: 1, yref: "paper", fillcolor: "#eb6834", opacity: 0.14, line: { width: 0 } },
+               { type: "line", x0: -48, x1: 72, y0: 60, y1: 60, line: { color: "#4d5761", width: 1, dash: "dot" } }],
+      annotations: [{ x: 26, y: 1331, text: "1,331", showarrow: false, yshift: 10, font: { color: "#1c242c", size: 13 } },
+                    { x: 70, y: 60, text: "India's 24-h limit", showarrow: false, xanchor: "right", yshift: 9, font: { size: 11 } }]
+    }, { displayModeBar: false, responsive: true });
+  })();
+
+  // Highlight the section in view in the top bar
+  const links = [...document.querySelectorAll("nav.top a.sec")];
+  const so = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === "#" + e.target.id)); });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  document.querySelectorAll("main section").forEach((s) => so.observe(s));
+</script>
+</body>
+</html>

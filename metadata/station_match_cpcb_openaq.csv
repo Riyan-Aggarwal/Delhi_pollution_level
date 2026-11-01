@@ -1,0 +1,13 @@
+station_key,cpcb_name,openaq_id,openaq_name,hours_compared,share_within_0.5,mean_abs_diff,corr,rule
+dwarka_sec8,"Dwarka-Sector 8, Delhi - DPCC",6931,"Dwarka-Sector 8, Delhi - DPCC",1739,1.0,0.0,1.0,exact (>=80% within 0.5)
+jahangirpuri,"Jahangirpuri, Delhi - DPCC",8235,"Jahangirpuri, Delhi - DPCC",1643,1.0,0.0,1.0,exact (>=80% within 0.5)
+okhla_ph2,"Okhla Phase-2, Delhi - DPCC",8239,"Okhla Phase-2, Delhi - DPCC",1698,1.0,0.0,1.0,exact (>=80% within 0.5)
+najafgarh,"Najafgarh, Delhi - DPCC",10488,"Najafgarh, Delhi - DPCC",1671,1.0,0.0,1.0,exact (>=80% within 0.5)
+anand_vihar,"Anand Vihar, Delhi - DPCC",235,"Anand Vihar, Delhi - DPCC",1701,0.999,0.004,1.0,exact (>=80% within 0.5)
+rk_puram,"R K Puram, Delhi - DPCC",17,"R K Puram, Delhi - DPCC",1730,0.989,0.031,1.0,exact (>=80% within 0.5)
+punjabi_bagh,"Punjabi Bagh, Delhi - DPCC",50,"Punjabi Bagh, Delhi - DPCC",1628,0.999,0.142,0.999,exact (>=80% within 0.5)
+pusa_dpcc,"Pusa, Delhi - DPCC",6356,"Pusa, Delhi - DPCC",1746,0.999,0.286,0.996,exact (>=80% within 0.5)
+narela,"Narela, Delhi - DPCC",10485,"Narela, Delhi - DPCC",1758,0.909,0.595,1.0,exact (>=80% within 0.5)
+ito,"ITO, Delhi - CPCB",5613,"ITO, Delhi - CPCB",1734,0.832,1.474,0.997,exact (>=80% within 0.5)
+pusa_iitm,"Pusa, Delhi - IITM",5404,"Pusa, Delhi - IMD",1612,0.162,5.457,0.984,"close (MAD<10, r>0.9)"
+lodhi_road_imd,"IMD Lodhi Road, Delhi - IITM",5634,"Lodhi Road, Delhi - IMD",1460,0.805,12.606,0.347,exact (>=80% within 0.5)

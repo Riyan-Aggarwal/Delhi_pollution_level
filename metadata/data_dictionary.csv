@@ -1,0 +1,21 @@
+column,dtype,unit,source,allowed_range,observed_min,observed_max,missing_pct
+station_key,category,,CPCB station (our short key),one of 11 keys,,,0.0
+ts_ist,datetime64[ns],IST,start of hour,"15 Sep - 30 Nov, 2023-2025",,,0.0
+year,int16,,derived,2023-2025,2023,2025,0.0
+days_from_diwali,int16,days,derived,about -60 to +40,-58,41,0.0
+pm25,float64,µg/m³,CPCB (2025 gaps: OpenAQ) after cleaning,"> 0 (no upper cap; up to ~1,900 seen on Diwali night 2025)",0.38,1901.0,2.4
+pm25_raw,float64,µg/m³,CPCB/OpenAQ before outlier removal and imputation,any (contains the errors that were removed),-232.7749938964844,1901.0,3.0
+pm25_flag,category,,derived outlier flag,"ok, stuck, isolated_spike, impossible_value, citywide_high_kept",,,0.0
+pm25_source,category,,derived,"cpcb, openaq, interpolated, missing",,,0.0
+pm10,float64,µg/m³,CPCB,> 0,0.59,1000.0,3.9
+st_temp_c,float64,°C,CPCB station sensor,0 - 45,2.2,50.8,19.7
+st_rh_pct,float64,%,CPCB station sensor,0 - 100,14.25,99.0,19.7
+st_wind_kmh,float64,km/h,CPCB station sensor (converted from m/s),0 - 60,0.36000000000000004,102.42,19.9
+st_wind_dir_deg,float64,degrees,CPCB station sensor,0 - 360,1.0,360.0,22.3
+temp_c,float64,°C,Open-Meteo,0 - 45,11.2,38.7,0.0
+rh_pct,int64,%,Open-Meteo,0 - 100,22,99,0.0
+rain_mm,float64,mm/hour,Open-Meteo,0 - 50,0.0,16.1,0.0
+wind_kmh,float64,km/h,"Open-Meteo, 10 m",0 - 60,0.0,27.6,0.0
+wind_dir_deg,int64,degrees (from),"Open-Meteo, 10 m",0 - 360,1,360,0.0
+pressure_hpa,float64,hPa,Open-Meteo,950 - 1010,975.9,996.9,0.0
+blh_m,float64,m,Open-Meteo boundary-layer height,0 - 3000,10.0,2790.0,0.0
