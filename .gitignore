@@ -1,13 +1,19 @@
 # secrets - never commit
 .env
+
 # python / jupyter junk
 __pycache__/
 .ipynb_checkpoints/
 *.pyc
 .venv/
 
-# temporary transfer files
+# copies the notebooks also write but we do not publish
+clean/*.csv
+docs/assets/figures/
+docs/assets/results.json
+
+# temporary files
 _incoming_*
 
-# report kept locally, not published
+# report kept locally
 report/

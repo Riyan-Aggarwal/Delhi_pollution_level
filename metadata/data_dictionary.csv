@@ -1,21 +1,21 @@
-column,dtype,unit,source,allowed_range,observed_min,observed_max,missing_pct
-station_key,category,,CPCB station (our short key),one of 11 keys,,,0.0
-ts_ist,datetime64[ns],IST,start of hour,"15 Sep - 30 Nov, 2023-2025",,,0.0
-year,int16,,derived,2023-2025,2023,2025,0.0
-days_from_diwali,int16,days,derived,about -60 to +40,-58,41,0.0
-pm25,float64,µg/m³,CPCB (2025 gaps: OpenAQ) after cleaning,"> 0 (no upper cap; up to ~1,900 seen on Diwali night 2025)",0.38,1901.0,2.4
-pm25_raw,float64,µg/m³,CPCB/OpenAQ before outlier removal and imputation,any (contains the errors that were removed),-232.7749938964844,1901.0,3.0
-pm25_flag,category,,derived outlier flag,"ok, stuck, isolated_spike, impossible_value, citywide_high_kept",,,0.0
-pm25_source,category,,derived,"cpcb, openaq, interpolated, missing",,,0.0
-pm10,float64,µg/m³,CPCB,> 0,0.59,1000.0,3.9
-st_temp_c,float64,°C,CPCB station sensor,0 - 45,2.2,50.8,19.7
-st_rh_pct,float64,%,CPCB station sensor,0 - 100,14.25,99.0,19.7
-st_wind_kmh,float64,km/h,CPCB station sensor (converted from m/s),0 - 60,0.36000000000000004,102.42,19.9
-st_wind_dir_deg,float64,degrees,CPCB station sensor,0 - 360,1.0,360.0,22.3
-temp_c,float64,°C,Open-Meteo,0 - 45,11.2,38.7,0.0
-rh_pct,int64,%,Open-Meteo,0 - 100,22,99,0.0
-rain_mm,float64,mm/hour,Open-Meteo,0 - 50,0.0,16.1,0.0
-wind_kmh,float64,km/h,"Open-Meteo, 10 m",0 - 60,0.0,27.6,0.0
-wind_dir_deg,int64,degrees (from),"Open-Meteo, 10 m",0 - 360,1,360,0.0
-pressure_hpa,float64,hPa,Open-Meteo,950 - 1010,975.9,996.9,0.0
-blh_m,float64,m,Open-Meteo boundary-layer height,0 - 3000,10.0,2790.0,0.0
+column,meaning,dtype,unit,source,allowed_range,observed_range,missing_pct,note
+station_key,Monitoring site (11 sites; the two Pusa monitors merged into 'pusa'),category,,CPCB station list,one of 11 site names,,0.0,
+ts_ist,Hour the reading covers (start of the hour),datetime64[ns],IST,CPCB timestamp,"15 Sep - 30 Nov, 2023-2025",,0.0,"1,848 hours per site per year"
+year,Season year,int16,,derived from ts_ist,2023-2025,2023 to 2025,0.0,
+days_from_diwali,Days before (-) or after (+) that year's Diwali,int16,days,derived from ts_ist,-58 to +41,-58 to 41,0.0,"Diwali: 12 Nov 2023, 31 Oct 2024, 20 Oct 2025"
+pm25,Hourly PM2.5 after cleaning; used in all analysis,float64,µg/m³,CPCB repository (gaps in 2025 filled from OpenAQ),"> 0, no upper limit",0.4 to 1901,2.4,"Missing hours are gaps longer than 3 hours, left empty on purpose"
+pm25_raw,Hourly PM2.5 before outlier removal and gap filling,float64,µg/m³,CPCB repository / OpenAQ,any (still contains the errors),-233 to 1901,3.0,Kept for the before/after comparison
+pm25_flag,Result of the outlier checks for that hour,category,,derived,"ok, impossible_value, stuck, isolated_spike, citywide_high_kept",,0.0,First three were set to missing in pm25
+pm25_source,Where the cleaned pm25 value came from,category,,derived,"cpcb, openaq, interpolated, missing",,0.0,
+pm10,"Hourly PM10; context only, not used in the analysis",float64,µg/m³,CPCB repository,> 0,0.6 to 1000,3.9,"Never above exactly 1,000: readings look capped by the instrument"
+st_temp_c,Air temperature measured at the station,float64,°C,CPCB repository (station sensor),0 - 45,2.2 to 50.8,19.7,Check only; some readings above 45 left as recorded
+st_rh_pct,Relative humidity measured at the station,float64,%,CPCB repository (station sensor),0 - 100,14.2 to 99,19.7,Check only
+st_wind_kmh,Wind speed measured at the station,float64,km/h,"CPCB repository (station sensor, converted from m/s)",0 - 60,0.4 to 102,19.9,"Check only; 40% of readings sit on the sensor minimum, some above 60"
+st_wind_dir_deg,Wind direction measured at the station,float64,degrees,CPCB repository (station sensor),0 - 360,1 to 360,22.3,Check only
+temp_c,Air temperature 2 m above ground,float64,°C,Open-Meteo Historical Weather API,0 - 45,11.2 to 38.7,0.0,Same for every site in a given hour
+rh_pct,Relative humidity 2 m above ground,int64,%,Open-Meteo Historical Weather API,0 - 100,22 to 99,0.0,
+rain_mm,Rain in that hour,float64,mm,Open-Meteo Historical Weather API,0 - 50,0 to 16.1,0.0,
+wind_kmh,Wind speed 10 m above ground,float64,km/h,Open-Meteo Historical Weather API,0 - 60,0 to 27.6,0.0,
+wind_dir_deg,Direction the wind blows from (0 = north),int64,degrees,Open-Meteo Historical Weather API,0 - 360,1 to 360,0.0,
+pressure_hpa,Air pressure at the surface,float64,hPa,Open-Meteo Historical Weather API,950 - 1010,976 to 997,0.0,
+blh_m,Boundary-layer height: depth of the air layer pollution mixes into,float64,m,Open-Meteo Historical Weather API,0 - 3000,10 to 2790,0.0,

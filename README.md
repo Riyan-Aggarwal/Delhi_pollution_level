@@ -1,57 +1,63 @@
 # Diwali, stubble burning and Delhi's air
 
-**Question:** How much of the October–November PM2.5 rise in Delhi comes from Diwali night, and how much from the season's weather?
+Course project for **DA2402 Data Curation and Visualisation** at IIT Madras (2026).
 
-**Answer, in one line:** Diwali night adds only about 1–4% of the seasonal rise. It is by far the worst night of the autumn (city-wide PM2.5 peaked at 1,331 µg/m³ in 2025), but it lasts about 12 hours, while the roughly +130 µg/m³ seasonal rise lasts two months.
+**Dashboard:** https://riyan-aggarwal.github.io/Delhi_pollution_level/
+**All charts in one file:** [`dashboard_figures.pdf`](dashboard_figures.pdf)
 
-**Website:** https://riyan-aggarwal.github.io/Delhi_pollution_level/ (or open `docs/index.html`, which also works offline)
+## Question
 
-DA2402 Data Curation and Visualisation, IIT Madras, Project #2 (Delhi slice; Diwalis of 12 Nov 2023, 31 Oct 2024 and 20 Oct 2025).
+How much of the October–November PM2.5 rise in Delhi comes from Diwali night, and how much from the season's weather?
 
-## What's in this repository
+We looked at 11 monitoring sites in Delhi over three autumns (15 Sep – 30 Nov), around the Diwalis of 12 Nov 2023, 31 Oct 2024 and 20 Oct 2025.
+
+## Answer in short
+
+Diwali night adds only about **1–4%** of the seasonal rise. It is by far the worst night of the autumn (city-wide PM2.5 peaked at **1,331 µg/m³** in 2025), but it lasts about 12 hours, while the roughly **+130 µg/m³** seasonal rise lasts two months.
+
+## Data
+
+| Source | What we took | How | Licence |
+|---|---|---|---|
+| [CPCB CAAQMS Data Repository](https://airquality.cpcb.gov.in/ccr/#/repository/data) | Hourly PM2.5, 2023–2025 | Downloaded by hand (the site has a captcha) | Government of India public data |
+| [OpenAQ](https://docs.openaq.org) API v3 + S3 archive | Station list, 2025 PM2.5 as a cross-check | Python script, free API key | OpenAQ terms of use |
+| [Open-Meteo Historical Weather](https://open-meteo.com/en/docs/historical-weather-api) | Hourly weather, including mixing-layer height | Python script | CC BY 4.0 |
+
+## Repository layout
 
 ```
 notebooks/
-  01_collection.ipynb    downloads OpenAQ + Open-Meteo, checks the hand-downloaded CPCB files, robots.txt checks, first look at raw files
-  02_cleaning.ipynb      formats, duplicates (incl. across sources), outliers, missing values -> clean table
-  03_analysis.ipynb      statistics, weather models, Diwali-night excess, all charts
-raw/                     files exactly as downloaded (never edited) - 46 MB
-  cpcb/                  36 hourly CSVs: 12 stations x 2023-2025
-  openaq/                1,008 daily CSV.gz files for 2025 + station list (JSON)
-  openmeteo/             3 JSON files of hourly weather
-interim/                 each source parsed into a table, before cleaning
-clean/                   delhi_pm25_hourly.parquet (+ .csv): 11 sites x 3 years x 1,848 hours
+  01_collection.ipynb    getting the data
+  02_cleaning.ipynb      cleaning and joining it into one table
+  03_analysis.ipynb      analysis and all the charts
+raw/                     files exactly as downloaded (never edited)
+interim/                 each source read into a table, before cleaning
+clean/                   delhi_pm25_hourly.parquet, the final table
 metadata/
-  provenance.csv         every raw file: URL, access time, licence, size, SHA-256
-  robots_checks.csv      robots.txt of every host we contacted
-  cleaning_log.csv       one line per cleaning step, with rows affected
-  data_dictionary.csv    column, dtype, unit, source, allowed range
-  station_match_cpcb_openaq.csv, cpcb_site_ids.csv, cpcb_download_log.csv, openaq_*.csv
-docs/                    the website (GitHub Pages serves this folder)
+  cleaning_log.csv       every cleaning step, the rows it affected and why
+  data_dictionary.csv    every column of the final table
+docs/                    the dashboard website
+dashboard_figures.pdf    every dashboard chart with its caption
 ```
 
-## Data sources
+## How to run
 
-| Source | Used for | Access | Licence |
-|---|---|---|---|
-| [CPCB CAAQMS Data Repository](https://airquality.cpcb.gov.in/ccr/#/repository/data) | Hourly PM2.5, 2023–2025 | Hand download (captcha): State Delhi → City Delhi → station → 1H | Government of India public data |
-| [OpenAQ](https://docs.openaq.org) API v3 + S3 archive | Station list, 2025 PM2.5 (cross-check) | Script, free API key | OpenAQ terms of use |
-| [Open-Meteo Historical Weather](https://open-meteo.com/en/docs/historical-weather-api) | Hourly weather incl. boundary-layer height | Script | CC BY 4.0 |
-
-OpenAQ has no Delhi government-station data from late 2022 to February 2025, which is why CPCB is the main PM2.5 source.
-
-## How to run it
-
-Run the three notebooks in order, top to bottom.
-
-1. Put a free OpenAQ API key in a file called `.env` in the repository root:
-   ```
-   OPENAQ_API_KEY=your-key
-   ```
-   In Google Colab, add it under **Secrets** as `OPENAQ_API_KEY` instead. The `.env` file is ignored by git, so the key never gets published.
-2. The CPCB files are already in `raw/cpcb/`. To re-download them, follow the steps in Section 5 of `01_collection.ipynb`.
-3. Install the packages:
+1. Install the packages:
    ```
    pip install pandas numpy scipy statsmodels plotly requests pyarrow python-dotenv
    ```
-4. Run `01_collection` → `02_cleaning` → `03_analysis`. Downloads are cached, so re-running is quick.
+2. Get a free OpenAQ API key and put it in a file called `.env` in this folder (it is not uploaded to GitHub):
+   ```
+   OPENAQ_API_KEY=your-key
+   ```
+3. Run the three notebooks in order. The CPCB files are already in `raw/cpcb/`.
+
+To view the dashboard on your own computer, run `python -m http.server` inside `docs/` and open http://localhost:8000. The maps need this, because they do not load when `index.html` is opened directly as a file.
+
+## Team
+
+| Member | Work |
+|---|---|
+| Riyan Aggarwal | Data visualisation |
+| Shaurya Gupta | Data collection |
+| Prakhar Srivastava | Data cleaning |

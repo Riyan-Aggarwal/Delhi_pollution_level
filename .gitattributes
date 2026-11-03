@@ -1,0 +1,3 @@
+# keep the language bar about our notebooks, not the bundled plotly library
+docs/assets/vendor/** linguist-vendored
+docs/assets/figures.js linguist-generated
