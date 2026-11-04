@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Diwali, Stubble and Delhi's Air</title>
 <meta name="description" content="How much of Delhi's October-November PM2.5 rise comes from Diwali night, and how much from the season? Hourly data from 11 CPCB stations, 2023-2025.">
+<script>try { if (localStorage.getItem("theme") === "dark") document.documentElement.setAttribute("data-theme", "dark"); } catch (e) {}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
@@ -17,7 +18,30 @@
     --rule: #d3d9df;        /* hairlines */
     --smog: #104281;        /* deep blue from the charts */
     --spark: #eb6834;       /* the one highlight: Diwali */
+    --spark-text: #c4501f;  /* highlight colour for text */
+    --nav: rgba(237,240,243,.95);
+    --th: #f6f7f9;          /* table header */
+    --cap: #2d3740;         /* captions */
+    --chart: #ffffff;       /* background behind each chart */
+    --pager-bg: #1c242c; --pager-ink: #ffffff;
     --measure: 70ch;
+    color-scheme: light;
+  }
+  /* Dark appearance: the page goes dark; charts stay on soft light cards so their colour scale reads the same */
+  :root[data-theme="dark"] {
+    --haze: #0a0a0a;
+    --paper: #141414;
+    --ink: #ededed;
+    --ink-2: #a3a3a3;
+    --rule: #2a2a2a;
+    --smog: #86b6ef;
+    --spark-text: #f2915f;
+    --nav: rgba(10,10,10,.86);
+    --th: #1b1b1b;
+    --cap: #cfcfcf;
+    --chart: #141414;
+    --pager-bg: #ededed; --pager-ink: #0a0a0a;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; scroll-padding-top: 64px; }
@@ -26,11 +50,12 @@
     margin: 0; background: var(--haze); color: var(--ink);
     font-family: "Public Sans", "Segoe UI", system-ui, sans-serif;
     font-size: 16px; line-height: 1.55; font-variant-numeric: tabular-nums;
+    transition: background-color .25s ease, color .25s ease;
   }
   a { color: var(--smog); text-underline-offset: 2px; }
   a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid var(--spark); outline-offset: 2px; }
 
-  nav.top { position: sticky; top: 0; z-index: 10; background: rgba(237,240,243,.95); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
+  nav.top { position: sticky; top: 0; z-index: 10; background: var(--nav); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
   nav.top .inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; gap: 20px; align-items: center; height: 52px; overflow-x: auto; }
   nav.top .brand { font-weight: 800; white-space: nowrap; margin-right: auto; color: var(--ink); text-decoration: none; }
   nav.top a.sec { color: var(--ink-2); text-decoration: none; font-size: 15px; white-space: nowrap; padding: 4px 0; border-bottom: 2px solid transparent; }
@@ -51,7 +76,7 @@
   .facts div { background: var(--paper); padding: 14px 16px; }
   .facts b { display: block; font-size: 28px; font-weight: 800; line-height: 1.1; }
   .facts span { font-size: 14px; color: var(--ink-2); }
-  .facts b.spark { color: #c4501f; }
+  .facts b.spark { color: var(--spark-text); }
   @media (max-width: 860px) { .facts { grid-template-columns: 1fr 1fr; } }
 
   section { padding-top: 44px; }
@@ -65,10 +90,21 @@
   @media (max-width: 980px) { .grid2 { grid-template-columns: 1fr; } }
   figure.chart { margin: 0 0 18px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 10px 2px; min-width: 0; }
   figure.chart .plot { width: 100%; min-height: 360px; }
-  figure.chart figcaption { padding: 4px 8px 12px; max-width: var(--measure); font-size: 15px; color: #2d3740; }
+  figure.chart figcaption { padding: 4px 8px 12px; max-width: var(--measure); font-size: 15px; color: var(--cap); }
   figure.chart figcaption b { font-weight: 600; color: var(--ink); }
 
   .datacards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  .datacards.two { grid-template-columns: 1fr 1fr; }
+  table.rules { table-layout: fixed; width: 100%; }
+  table.rules td, table.rules th { white-space: normal; vertical-align: top; }
+  .card ul { margin: 6px 0 0; padding-left: 18px; font-size: 14px; color: var(--ink-2); }
+  .card ul li { margin: 3px 0; }
+  .card ul b { color: var(--ink); }
+  .step { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--spark-text); margin-bottom: 2px; }
+  .qa { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+  @media (max-width: 860px) { .qa { grid-template-columns: 1fr; } }
+  .qa .card p { font-size: 15px; color: var(--ink); }
+  .qa .card p + p { margin-top: 6px; color: var(--ink-2); font-size: 14px; }
   @media (max-width: 860px) { .datacards { grid-template-columns: 1fr; } }
   .card { background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; }
   .card h4 { margin: 0 0 4px; font-size: 16px; }
@@ -77,7 +113,7 @@
 
   table { border-collapse: collapse; width: 100%; font-size: 14px; background: var(--paper); }
   th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--rule); vertical-align: top; white-space: nowrap; }
-  th { font-weight: 600; background: #f6f7f9; }
+  th { font-weight: 600; background: var(--th); }
   td.n, th.n { text-align: right; }
   tr:last-child td { border-bottom: 0; }
   .tablewrap { overflow-x: auto; margin: 0 0 8px; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper); }
@@ -103,15 +139,24 @@
   h3.part { font-size: 22px; margin: 36px 0 12px; padding-left: 12px; border-left: 4px solid var(--spark); }
   .facts { margin-top: 14px; }
   .facts b { font-size: 24px; }
-  .pager { position: fixed; right: 14px; bottom: 14px; z-index: 20; background: var(--ink); color: #fff; font-size: 13px; padding: 6px 10px; border-radius: 4px; opacity: .85; }
+  .pager { position: fixed; right: 14px; bottom: 14px; z-index: 20; background: var(--pager-bg); color: var(--pager-ink); font-size: 13px; padding: 6px 10px; border-radius: 4px; opacity: .85; }
   @media (max-width: 700px) { .pager { display: none; } }
+  .theme-btn { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; margin-left: 4px;
+    border-radius: 50%; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); cursor: pointer; padding: 0;
+    transition: background-color .25s ease, border-color .2s ease, color .25s ease; }
+  .theme-btn:hover { border-color: var(--ink-2); }
+  .theme-btn svg { width: 17px; height: 17px; }
+  .theme-btn .sun { display: none; }
+  :root[data-theme="dark"] .theme-btn .sun { display: block; }
+  :root[data-theme="dark"] .theme-btn .moon { display: none; }
+  figure.chart, .card, .facts div, .tablewrap, table, details, .answer, .night { transition: background-color .25s ease, border-color .25s ease; }
   @media print { nav.top, .pager { display: none; } figure.chart, section { break-inside: avoid; } }
 </style>
 </head>
 <body>
 <nav class="top" aria-label="Presentation sections">
   <div class="inner">
-    <a class="brand" href="#top">Delhi's air at Diwali</a>
+    <a class="brand" href="#top">Delhi's air during Diwali</a>
     <a class="sec" href="#intro">1 Introduction</a>
     <a class="sec" href="#data">2 Data and methods</a>
     <a class="sec" href="#results">3 Results</a>
@@ -119,9 +164,12 @@
     <a class="sec" href="#limits">5 Limitations</a>
     <a class="sec" href="#credits">Attributions</a>
     <a class="sec" href="#team">Team</a>
+    <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2M12 19.8V22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2 12h2.2M19.8 12H22M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6"/></svg>
+    </button>
   </div>
 </nav>
-<div class="pager" aria-hidden="true"><span id="pager-pos"></span> · use ← → to move</div>
 
 <main id="top">
   <section id="intro" data-slide>
@@ -161,16 +209,42 @@
     <p class="prose" style="color:var(--ink-2)">Six rows from Diwali night 2025. Every row is one station in one hour; the weather columns are the same for every station in that hour.</p>
     <div class="tablewrap" id="preview"></div>
 
+    <h3 data-slide>Collecting the data fairly</h3>
+    <p class="prose" style="color:var(--ink-2)">Before downloading anything we read each site's <code>robots.txt</code> (the file that tells automated programs what they may fetch) and its terms of use, on 31 October 2026.</p>
+    <div class="tablewrap"><table class="rules">
+      <colgroup><col style="width:11%"><col style="width:22%"><col style="width:36%"><col style="width:31%"></colgroup>
+      <thead><tr><th>Site</th><th>robots.txt</th><th>Terms of use</th><th>What we did</th></tr></thead>
+      <tbody>
+        <tr><td><b>CPCB</b></td><td>None published</td><td>Public government data; the download page has a captcha, so automated downloads are clearly not wanted</td><td>Downloaded the 36 files <b>by hand</b>, no scraping</td></tr>
+        <tr><td><b>OpenAQ</b></td><td>None published (API and AWS archive)</td><td>Use the official API or exports, not scraping; credit OpenAQ as the source</td><td>Used the official API with a free key and the public archive; credited below</td></tr>
+        <tr><td><b>Open-Meteo</b></td><td><code>Disallow: /</code> on the API host (aimed at search-engine crawlers)</td><td>Free for non-commercial use under CC BY 4.0, up to 10,000 calls a day</td><td>Made just <b>3 calls</b> through the documented API; credited below</td></tr>
+      </tbody></table></div>
+
+    <h3 data-slide>How we cleaned it</h3>
+    <p class="prose" style="color:var(--ink-2)">24 steps in all, each written to <code>metadata/cleaning_log.csv</code> with the rows it touched and why. The raw files were never edited.</p>
+    <div class="datacards two">
+      <div class="card"><span class="step">1 · Formats</span><h4>Make the sources line up</h4>
+        <ul><li>Units moved out of column names, e.g. <code>PM2.5 (µg/m³)</code> → <code>pm25</code></li>
+            <li>Text dates turned into real dates (0 failures); both sources put on <b>Indian time</b></li>
+            <li>OpenAQ's 15-minute readings averaged into hours, to match CPCB</li>
+            <li>Station wind converted from m/s to km/h</li></ul></div>
+      <div class="card"><span class="step">2 · Duplicates</span><h4>Count every reading once</h4>
+        <ul><li>The two sources spell station names differently, so we matched stations <b>by their values</b>: same reading (within 0.5 µg/m³) in at least 80% of hours</li>
+            <li>Dropped <b>20,120</b> OpenAQ hours that CPCB already had</li>
+            <li>Merged the two Pusa monitors (same place, two names) into one site: 12 stations → 11 sites</li></ul></div>
+      <div class="card"><span class="step">3 · Outliers</span><h4>Remove sensor faults, keep real smog</h4>
+        <ul><li><b>Impossible:</b> PM2.5 of 0 or below, 55 removed</li>
+            <li><b>Stuck sensor:</b> the exact same value 4+ hours in a row, 43 removed</li>
+            <li><b>Lone spike:</b> over 3× the station's own day and 3× every other station that hour, 28 removed</li>
+            <li><b>Kept 154</b> extreme hours that many stations saw together, like Diwali nights: those are real</li></ul></div>
+      <div class="card"><span class="step">4 · Missing values</span><h4>Fill only what we can trust</h4>
+        <ul><li>About 3% of hours were missing. Tests show the gaps depend on the <b>station</b> and the <b>season</b> (p &lt; 0.001), not the hour of day (p = 0.21), so they are <b>MAR</b></li>
+            <li>2025 CPCB gaps filled from the same station's OpenAQ copy (200 hours)</li>
+            <li>Gaps of <b>3 hours or less</b>: straight-line interpolation (482 hours), since PM2.5 changes smoothly</li>
+            <li><b>Longer gaps left empty</b> (1,487 hours, 2.4%): filling them could invent or hide a Diwali peak</li></ul></div>
+    </div>
+
     <div class="cols" data-slide>
-      <div>
-        <h3>How we cleaned it</h3>
-        <ul class="tight">
-          <li><b>Formats:</b> units moved out of column names, text dates parsed (0 failures), both PM2.5 sources put on Indian time, OpenAQ's 15-minute readings averaged to hours, station wind converted from m/s to km/h.</li>
-          <li><b>Duplicates:</b> CPCB and OpenAQ name stations differently ("Pusa, Delhi - IMD" vs "Pusa, Delhi - IITM"), so we matched stations by their values: 11 of 12 agree hour for hour in ≥80% of hours. We dropped 20,120 duplicate OpenAQ hours and merged the two Pusa monitors (same location) into one site.</li>
-          <li><b>Outliers:</b> removed 55 impossible values (≤ 0), 43 stuck-sensor hours and 28 single-station spikes; <b>kept</b> 154 extreme hours seen across the city, such as Diwali nights.</li>
-          <li><b>Missing values:</b> about 3% of hours, linked to station and season, not to pollution level (MAR). Gaps ≤ 3 hours interpolated (482 hours); longer gaps left empty (1,487 hours, 2.4%).</li>
-        </ul>
-      </div>
       <div>
         <h3>How we answer the question</h3>
         <ol class="tight">
@@ -178,7 +252,15 @@
           <li><b>Weather's part:</b> two regressions of daily log PM2.5: <i>ventilation only</i> (mixing height, wind) as a lower estimate, and <i>full weather</i> (adding temperature, humidity) as an upper estimate.</li>
           <li><b>Diwali night's part:</b> Diwali night (18:00–06:00) minus the nights 2–7 days either side, and minus what its weather predicts. The 12-hour excess is spread over the 1,464 hours of October–November.</li>
         </ol>
-        <p class="note">robots.txt and terms checked for every site; full code, cleaning log and data dictionary are in the <a href="https://github.com/Riyan-Aggarwal/Delhi_pollution_level">repository</a>.</p>
+      </div>
+      <div>
+        <h3>Why these choices</h3>
+        <ul class="tight">
+          <li><b>Parquet</b> for the clean table: keeps dates and number types exactly when read back, and is small (1.2 MB).</li>
+          <li><b>Two weather models, not one:</b> weather and stubble smoke arrive together, so we give a range instead of pretending to separate them.</li>
+          <li><b>Neighbouring nights as the baseline:</b> they share Diwali's season and weather, so the difference isolates the night itself.</li>
+        </ul>
+        <p class="note">Full code, cleaning log and data dictionary are in the <a href="https://github.com/Riyan-Aggarwal/Delhi_pollution_level">repository</a>.</p>
       </div>
     </div>
     <figure class="chart" data-slide><div class="plot" id="fig8_before_after"></div>
@@ -191,12 +273,12 @@
 
     <h3 id="r-season" class="part">The season</h3>
     <figure class="chart" data-slide><div class="plot" id="fig1_monthly_distribution"></div>
-      <figcaption>Each dot is one day's city-wide average. The medians (black ticks) climb from <b>45–49 µg/m³ in late September</b> to <b>92–110 in October</b> and <b>226–260 in November</b>. Even the cleanest November days are about twice India's limit of 60.</figcaption></figure>
+      <figcaption>Each dot is one day's city-wide average. The medians (<span data-dk="white">black</span> ticks) climb from <b>45–49 µg/m³ in late September</b> to <b>92–110 in October</b> and <b>226–260 in November</b>. Even the cleanest November days are about twice India's limit of 60.</figcaption></figure>
     <figure class="chart" data-slide><div class="plot" id="fig2_season_daily"></div>
       <figcaption>One panel per year on the same axes (small multiples). The climb starts in mid-October each year whatever the date of Diwali (orange band). The worst day of 2024 was <b>18 November (600 µg/m³)</b>, more than two weeks after Diwali; 2025's tallest spike (504) is the day after Diwali.</figcaption></figure>
     <div class="grid2" data-slide>
     <figure class="chart"><div class="plot" id="fig10_calendar"></div>
-      <figcaption>Every day as a cell; darker is dirtier. The first day above 120 µg/m³ ("very poor") came on <b>13 October 2023, 17 October 2024 and 18 October 2025</b>.</figcaption></figure>
+      <figcaption>Every day as a cell; <span data-dk="brighter">darker</span> is dirtier. The first day above 120 µg/m³ ("very poor") came on <b>13 October 2023, 17 October 2024 and 18 October 2025</b>.</figcaption></figure>
     <figure class="chart"><div class="plot" id="fig11_aqi_bands"></div>
       <figcaption>India's official AQI bands. In late September <b>80%</b> of days were "good" or "satisfactory"; in November <b>98%</b> were "very poor" (57%) or "severe" (41%).</figcaption></figure>
     </div>
@@ -205,7 +287,9 @@
 
     <h3 id="r-rhythm" class="part">Day and night</h3>
     <figure class="chart" data-slide><div class="plot" id="fig21_hour_day_heatmap"></div>
-      <figcaption>Every hour of every season: each column is a day, each row an hour. From late October the night hours turn dark almost every day while the afternoons stay lighter. The darkest single columns are Diwali 2025 (20–21 Oct) and the smog episode of 13–18 November 2024.</figcaption></figure>
+      <figcaption>Every hour of every season: each column is a day, each row an hour. From late October the night hours turn <span data-dk="bright">dark</span> almost every day while the afternoons stay <span data-dk="darker">lighter</span>. The <span data-dk="brightest">darkest</span> single columns are Diwali 2025 (20–21 Oct) and the smog episode of 13–18 November 2024.</figcaption></figure>
+    <figure class="chart" data-slide><div class="plot" id="fig26_wind_hour_day"></div>
+      <figcaption>Wind speed at every hour, laid out like the PM2.5 grid above; <span data-dk="brighter">darker</span> means windier. Every day the wind is weakest around <b>1 am (5.8 km/h</b> on average) and strongest around <b>3 pm (9.7 km/h)</b>, the same rhythm as PM2.5 in reverse. It also weakens through the season: afternoons average 10.6 km/h in late September but 7.9 in November, and <b>35% of November nights</b> are below 5 km/h (25% in September). Diwali night 2025 was calmer than usual (<b>3.7 km/h</b> against 4.8 for that season's nights); Diwali 2024 was windy (<b>10.1 km/h</b>) and had the lowest Diwali peak of the three years.</figcaption></figure>
     <figure class="chart" data-slide><div class="plot" id="fig12_daily_cycle"></div>
       <figcaption>Average by hour of day. In November the city is dirtiest around <b>1 am (296 µg/m³)</b> and cleanest around <b>4 pm (153)</b>, when the sun warms the ground and the air mixes upward. In late September the curve is almost flat, around 40–55.</figcaption></figure>
     <figure class="chart" data-slide><div class="plot" id="fig22_nightingale_rose"></div>
@@ -217,7 +301,7 @@
     <figure class="chart" data-slide><div class="plot" id="fig25_diwali_map_animation"></div>
       <figcaption>Press <b>Play</b> to watch Diwali night 2025 hour by hour, in the spirit of John Snow's cholera map and Hans Rosling's moving bubbles. Bubble size and colour show PM2.5. Smoke builds across the city from about 9 pm, and every station peaks between 1 and 5 am; Najafgarh reached <b>1,901 µg/m³</b> at 5 am.</figcaption></figure>
     <figure class="chart" data-slide><div class="plot" id="fig13_diwali_station_heatmap"></div>
-      <figcaption>The same night as a station-by-hour grid. The core stations turn dark first; Najafgarh, in the south-west, stays dark longest; Narela, on the northern edge, stays far lighter than the rest.</figcaption></figure>
+      <figcaption>The same night as a station-by-hour grid. The core stations turn <span data-dk="bright">dark</span> first; Najafgarh, in the south-west, stays <span data-dk="bright">dark</span> longest; Narela, on the northern edge, stays far <span data-dk="darker">lighter</span> than the rest.</figcaption></figure>
     <div class="grid2" data-slide>
     <figure class="chart"><div class="plot" id="fig5_diwali_vs_expected"></div>
       <figcaption>Diwali night averaged <b>463, 382 and 785 µg/m³</b>, against 271, 209 and 142 on the surrounding nights. In 2025 it was <b>8.4 times</b> what that night's weather predicted; in 2023, when the air was already very still, 1.8 times.</figcaption></figure>
@@ -259,11 +343,21 @@
       <div><b>3–41% / 72–122%</b><span>of the rise predicted by ventilation alone / by the full weather model</span></div>
       <div><b>1.8× to 8.4×</b><span>Diwali night against what its weather predicted (463, 382, 785 µg/m³)</span></div>
     </div>
-    <ul class="tight" style="margin-top:16px">
-      <li><b>Diwali night is the worst event of the autumn:</b> city-wide PM2.5 peaked at 679, 650 and 1,331 µg/m³, about 22 times India's limit in 2025.</li>
-      <li><b>But it is short.</b> 12 hours out of the 1,464 in October–November, so it moves the season's average by only a few µg/m³.</li>
-      <li><b>The season does the rest.</b> In November 98% of days were "very poor" or "severe". Weather explains somewhere between a small part (3–41%) and nearly all (72–122%) of the rise; our data cannot separate colder, stiller air from the stubble smoke and heating that arrive at the same time of year.</li>
-    </ul>
+    <div class="qa">
+      <div class="card"><span class="step">How much comes from Diwali night?</span>
+        <p><b>Very little of the season's total: about 1–4%.</b> Diwali night raises the October–November average by only 1.4 to 5.3 µg/m³.</p>
+        <p>It is the worst single night of the autumn (peaks of 679, 650 and 1,331 µg/m³; in 2025, 22 times India's daily limit), but it lasts 12 hours out of 1,464.</p></div>
+      <div class="card"><span class="step">How much comes from the season's weather?</span>
+        <p><b>A large share, but we can only give a range.</b> Still air alone (low mixing height, light wind) explains 3–41% of the rise; adding colder, more humid air explains 72–122%.</p>
+        <p>Crop-fire smoke and winter heating arrive at the same time as the cold, still air, so our data cannot fully separate them.</p></div>
+    </div>
+    <h3 style="margin-top:22px">What this means, in plain words</h3>
+    <ol class="tight">
+      <li><b>Delhi's autumn smog is a two-month problem, not a one-night problem.</b> Air climbs about 130 µg/m³ from late September and stays there: in November, 98% of days were "very poor" or "severe".</li>
+      <li><b>Diwali makes a bad season much worse for one night.</b> That night's air was 1.8 to 8.4 times what its weather alone would predict, so the festival adds a real, large but short spike.</li>
+      <li><b>Calm weather goes with a worse Diwali.</b> The 2025 Diwali night was very still (wind 3.7 km/h) and hit 1,331 µg/m³; the windy 2024 night (10.1 km/h) had the lowest peak. With three years this is a pattern, not proof.</li>
+      <li><b>So both views are partly right,</b> but on numbers the season matters far more than the festival.</li>
+    </ol>
   </section>
 
   <section id="limits" data-slide>
@@ -334,15 +428,81 @@
 <script>
   const CONFIG = { displaylogo: false, responsive: true, modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"] };
 
+  // Light / dark appearance
+  const isDark = () => document.documentElement.getAttribute("data-theme") === "dark";
+  const chartBg = () => (isDark() ? "#141414" : "#ffffff");
+
+  // Dark versions of every colour used in the charts. The blue scale is reversed
+  // (step 100 <-> 700) so that on a dark background brighter still means dirtier air.
+  const DARK = {
+    "white": "#141414", "#ffffff": "#141414", "#fff": "#141414", "#f4f6f8": "#1b1b1b", "black": "#ededed",
+    "rgb(36,36,36)": "rgb(225,225,225)", "rgb(232,232,232)": "rgb(42,42,42)",
+    "#e7e6e2": "#262626", "#0b0b0b": "#ededed", "#1c242c": "#ededed", "#52514e": "#a3a3a3", "#4d5761": "#a3a3a3",
+    "#b8b7b0": "#6b6b6b", "#c4501f": "#f2915f", "#e5ecf6": "#1b1b1b", "#ebf0f8": "#1b1b1b", "#c8d4e3": "#3a3a3a", "#2a3f5f": "#cfcfcf",
+    "rgba(16,66,129,0.07)": "rgba(183,211,246,0.10)", "rgba(16,66,129,0.08)": "rgba(183,211,246,0.10)",
+    "#cde2fb": "#0d366b", "#b7d3f6": "#104281", "#9ec5f4": "#184f95", "#86b6ef": "#1c5cab", "#6da7ec": "#256abf", "#5598e7": "#2a78d6",
+    "#3987e5": "#3987e5",
+    "#e0f5ec": "#0b5640", "#b3e6d0": "#137a5b", "#7fd3b2": "#1f9e76", "#4bbd93": "#4bbd93", "#1f9e76": "#7fd3b2", "#137a5b": "#b3e6d0", "#0b5640": "#e0f5ec", "#2a78d6": "#5598e7", "#256abf": "#6da7ec", "#1c5cab": "#86b6ef", "#184f95": "#9ec5f4", "#104281": "#b7d3f6", "#0d366b": "#cde2fb"
+  };
+  const COLOR_TOKEN = /"(#[0-9a-fA-F]{3,8}|white|black|rgba?\([^"]*\))"/g;
+  function darkify(obj) {
+    const out = JSON.parse(JSON.stringify(obj).replace(COLOR_TOKEN, (m, c) => {
+      const k = c.toLowerCase().replace(/\s+/g, "");
+      return DARK[k] ? '"' + DARK[k] + '"' : m;
+    }));
+    if (out.layout && out.layout.map) out.layout.map.style = "carto-darkmatter";
+    // Map bubbles: keep to the brighter half of the scale so even low values show on the dark map
+    (out.data || []).concat(...(out.frames || []).map((fr) => fr.data)).forEach((tr) => {
+      if (tr.type === "scattermap" && tr.marker && tr.marker.colorscale)
+        tr.marker.colorscale = [[0, "#2a78d6"], [0.35, "#6da7ec"], [0.7, "#b7d3f6"], [1, "#eef5fe"]];
+    });
+    // Slider and play button of the animation
+    (out.layout.sliders || []).forEach((sl) => Object.assign(sl, { bgcolor: "#262626", bordercolor: "#3a3a3a", activebgcolor: "#5598e7", tickcolor: "#6b6b6b",
+      font: { color: "#a3a3a3" }, currentvalue: Object.assign({}, sl.currentvalue, { font: { size: 13, color: "#ededed" } }) }));
+    (out.layout.updatemenus || []).forEach((um) => Object.assign(um, { bgcolor: "#1b1b1b", bordercolor: "#3a3a3a", font: { color: "#ededed" } }));
+    const t = out.layout && out.layout.title;
+    if (t && t.text) t.text = t.text.replace("turns dark", "turns bright").replace("is a dark band", "is a bright band").replace("darkest single column", "brightest single column");
+    return out;
+  }
+  const darkCache = {};
+  function figFor(id, el) {
+    let f = window.FIGS[id];
+    if (isDark()) f = darkCache[id] || (darkCache[id] = darkify(f));
+    const layout = Object.assign({}, f.layout, { autosize: true, paper_bgcolor: chartBg(), plot_bgcolor: chartBg() });
+    delete layout.width;
+    if (el.closest(".grid2")) fitHalfWidth(layout);
+    return { data: f.data, layout: layout, frames: f.frames || [], config: CONFIG };
+  }
+
+  // Captions that describe the colour scale ("darker is dirtier") follow the theme
+  function swapWords() {
+    document.querySelectorAll("span[data-dk]").forEach((sp) => {
+      if (!sp.dataset.lt) sp.dataset.lt = sp.textContent;
+      sp.textContent = isDark() ? sp.dataset.dk : sp.dataset.lt;
+    });
+  }
+  swapWords();
+
+  function setTheme(t) {
+    if (t === "dark") document.documentElement.setAttribute("data-theme", "dark");
+    else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("theme", t); } catch (e) {}
+    const btn = document.getElementById("theme-btn"), label = t === "dark" ? "Switch to light mode" : "Switch to dark mode";
+    if (btn) { btn.setAttribute("aria-label", label); btn.title = label; }
+    swapWords();
+    if (!window.Plotly) return;
+    document.querySelectorAll(".plot[data-drawn]").forEach((el) => Plotly.react(el, figFor(el.id, el)));
+    drawHero();
+  }
+  document.getElementById("theme-btn").addEventListener("click", () => setTheme(isDark() ? "light" : "dark"));
+  if (isDark()) { const b = document.getElementById("theme-btn"); b.setAttribute("aria-label", "Switch to light mode"); b.title = "Switch to light mode"; }
+
   function draw(id) {
     const el = document.getElementById(id), f = (window.FIGS || {})[id];
     if (!el || el.dataset.drawn) return;
     if (!f || !window.Plotly) { el.textContent = "Chart could not load. Open this page from the docs folder so assets/ is next to it."; return; }
-    const layout = Object.assign({}, f.layout, { autosize: true });
-    delete layout.width;
-    if (el.closest(".grid2")) fitHalfWidth(layout);
     el.dataset.drawn = "1";
-    Plotly.newPlot(el, { data: f.data, layout: layout, frames: f.frames || [], config: CONFIG });
+    Plotly.newPlot(el, figFor(id, el));
   }
 
   // Half-width charts: wrap long titles over several lines and put horizontal legends under the plot
@@ -355,8 +515,11 @@
       m.t = Math.max(m.t, 38 + 21 * lines.length);
     }
     if (layout.legend && layout.legend.orientation === "h") {
-      layout.legend = Object.assign({}, layout.legend, { y: -0.32, yanchor: "top", x: 0, xanchor: "left" });
       m.b = Math.max(m.b, 125);
+      // keep the legend a fixed 66 px below the plot, clear of the x-axis title; give very short charts some extra height
+      let plotH = (layout.height || 450) - m.t - m.b;
+      if (plotH < 170) { layout.height = (layout.height || 450) + (170 - plotH); plotH = 170; }
+      layout.legend = Object.assign({}, layout.legend, { y: -66 / plotH, yanchor: "top", x: 0, xanchor: "left" });
     }
     layout.margin = m;
   }
@@ -381,23 +544,26 @@
   })();
 
   // Hero: the 2025 Diwali-night series, drawn bare
-  (function hero() {
+  function drawHero() {
     const f = (window.FIGS || {}).fig4_diwali_hourly;
     if (!f || !window.Plotly) return;
     const t = f.data.find((d) => d.name === "2025");
-    Plotly.newPlot("hero-chart", [Object.assign({}, t, {
-      line: { color: "#104281", width: 2.5 }, showlegend: false, fill: "tozeroy", fillcolor: "rgba(16,66,129,0.08)"
+    const C = isDark() ? { line: "#b7d3f6", fill: "rgba(183,211,246,0.10)", ink: "#ededed", ink2: "#a3a3a3", rule: "#3a3a3a", grid: "#262626" }
+                       : { line: "#104281", fill: "rgba(16,66,129,0.08)", ink: "#1c242c", ink2: "#4d5761", rule: "#d3d9df", grid: "#e7e6e2" };
+    Plotly.react("hero-chart", [Object.assign({}, t, {
+      line: { color: C.line, width: 2.5 }, showlegend: false, fill: "tozeroy", fillcolor: C.fill
     })], {
-      margin: { l: 44, r: 10, t: 6, b: 30 }, height: 230, paper_bgcolor: "#fff", plot_bgcolor: "#fff",
-      font: { family: "Public Sans, Segoe UI, sans-serif", size: 12, color: "#4d5761" },
-      xaxis: { range: [-48, 72], tickvals: [-48, -24, 0, 24, 48, 72], ticktext: ["18 Oct", "19 Oct", "20 Oct (Diwali)", "21 Oct", "22 Oct", "23 Oct"], showgrid: false, zeroline: false, linecolor: "#d3d9df" },
-      yaxis: { gridcolor: "#e7e6e2", zeroline: false, title: { text: "µg/m³" } },
+      margin: { l: 44, r: 10, t: 6, b: 30 }, height: 230, paper_bgcolor: chartBg(), plot_bgcolor: chartBg(),
+      font: { family: "Public Sans, Segoe UI, sans-serif", size: 12, color: C.ink2 },
+      xaxis: { range: [-48, 72], tickvals: [-48, -24, 0, 24, 48, 72], ticktext: ["18 Oct", "19 Oct", "20 Oct (Diwali)", "21 Oct", "22 Oct", "23 Oct"], showgrid: false, zeroline: false, linecolor: C.rule },
+      yaxis: { gridcolor: C.grid, zeroline: false, title: { text: "µg/m³" } },
       shapes: [{ type: "rect", x0: 18, x1: 30, y0: 0, y1: 1, yref: "paper", fillcolor: "#eb6834", opacity: 0.14, line: { width: 0 } },
-               { type: "line", x0: -48, x1: 72, y0: 60, y1: 60, line: { color: "#4d5761", width: 1, dash: "dot" } }],
-      annotations: [{ x: 26, y: 1331, text: "1,331", showarrow: false, yshift: 10, font: { color: "#1c242c", size: 13 } },
+               { type: "line", x0: -48, x1: 72, y0: 60, y1: 60, line: { color: C.ink2, width: 1, dash: "dot" } }],
+      annotations: [{ x: 26, y: 1331, text: "1,331", showarrow: false, yshift: 10, font: { color: C.ink, size: 13 } },
                     { x: 70, y: 60, text: "India's 24-h limit", showarrow: false, xanchor: "right", yshift: 9, font: { size: 11 } }]
     }, { displayModeBar: false, responsive: true });
-  })();
+  }
+  drawHero();
 
   // Highlight the section in view in the top bar
   const links = [...document.querySelectorAll("nav.top a.sec")];
