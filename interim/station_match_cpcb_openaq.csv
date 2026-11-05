@@ -1,7 +1,7 @@
 station_key,cpcb_name,openaq_id,openaq_name,hours_compared,share_within_0.5,mean_abs_diff,corr,rule
-dwarka_sec8,"Dwarka-Sector 8, Delhi - DPCC",6931,"Dwarka-Sector 8, Delhi - DPCC",1739,1.0,0.0,1.0,exact (>=80% within 0.5)
-jahangirpuri,"Jahangirpuri, Delhi - DPCC",8235,"Jahangirpuri, Delhi - DPCC",1643,1.0,0.0,1.0,exact (>=80% within 0.5)
 okhla_ph2,"Okhla Phase-2, Delhi - DPCC",8239,"Okhla Phase-2, Delhi - DPCC",1698,1.0,0.0,1.0,exact (>=80% within 0.5)
+jahangirpuri,"Jahangirpuri, Delhi - DPCC",8235,"Jahangirpuri, Delhi - DPCC",1643,1.0,0.0,1.0,exact (>=80% within 0.5)
+dwarka_sec8,"Dwarka-Sector 8, Delhi - DPCC",6931,"Dwarka-Sector 8, Delhi - DPCC",1739,1.0,0.0,1.0,exact (>=80% within 0.5)
 najafgarh,"Najafgarh, Delhi - DPCC",10488,"Najafgarh, Delhi - DPCC",1671,1.0,0.0,1.0,exact (>=80% within 0.5)
 anand_vihar,"Anand Vihar, Delhi - DPCC",235,"Anand Vihar, Delhi - DPCC",1701,0.999,0.004,1.0,exact (>=80% within 0.5)
 rk_puram,"R K Puram, Delhi - DPCC",17,"R K Puram, Delhi - DPCC",1730,0.989,0.031,1.0,exact (>=80% within 0.5)

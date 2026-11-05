@@ -1,6 +1,6 @@
 column,meaning,dtype,unit,source,allowed_range,observed_range,missing_pct,note
 station_key,Monitoring site (11 sites; the two Pusa monitors merged into 'pusa'),category,,CPCB station list,one of 11 site names,,0.0,
-ts_ist,Hour the reading covers (start of the hour),datetime64[ns],IST,CPCB timestamp,"15 Sep - 30 Nov, 2023-2025",,0.0,"1,848 hours per site per year"
+ts_ist,Hour the reading covers (start of the hour),datetime64[us],IST,CPCB timestamp,"15 Sep - 30 Nov, 2023-2025",,0.0,"1,848 hours per site per year"
 year,Season year,int16,,derived from ts_ist,2023-2025,2023 to 2025,0.0,
 days_from_diwali,Days before (-) or after (+) that year's Diwali,int16,days,derived from ts_ist,-58 to +41,-58 to 41,0.0,"Diwali: 12 Nov 2023, 31 Oct 2024, 20 Oct 2025"
 pm25,Hourly PM2.5 after cleaning; used in all analysis,float64,µg/m³,CPCB repository (gaps in 2025 filled from OpenAQ),"> 0, no upper limit",0.4 to 1901,2.4,"Missing hours are gaps longer than 3 hours, left empty on purpose"
