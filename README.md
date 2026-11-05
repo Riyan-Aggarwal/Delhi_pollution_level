@@ -42,24 +42,11 @@ dashboard_figures.pdf    the dashboard charts with their captions
 report/report.md         the full report: how we collected, cleaned and analysed the data
 ```
 
-## How to run
-
-1. Install the packages:
-   ```
-   pip install pandas numpy scipy statsmodels plotly requests pyarrow python-dotenv
-   ```
-2. Get a free OpenAQ API key and put it in a file called `.env` in this folder (it is not uploaded to GitHub):
-   ```
-   OPENAQ_API_KEY=your-key
-   ```
-3. Run the three notebooks in order. The CPCB files are already in `raw/cpcb/`.
-
-To view the dashboard on your own computer, run `python -m http.server` inside `docs/` and open http://localhost:8000. The maps need this, because they do not load when `index.html` is opened directly as a file.
 
 ## Team
 
-| Member | Work |
-|---|---|
-| Riyan Aggarwal | Data visualisation |
-| Shaurya Gupta | Data collection |
-| Prakhar Srivastava | Data cleaning |
+| Member
+|---|
+| Riyan Aggarwal 
+| Shaurya Gupta
+| Prakhar Srivastava

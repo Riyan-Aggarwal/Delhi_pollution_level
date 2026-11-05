@@ -21,8 +21,7 @@
 - We used the OpenAQ API (v3, with a free key) to list every monitoring station in and around Delhi. It returned 99 locations. We kept only government monitors (run by CPCB, DPCC, IMD or IITM), as the brief asks.
 - We then tried to get hourly PM2.5 for 2023, 2024 and 2025, both from OpenAQ's public archive on AWS and through the API.
 - **Problem:** we only got 2025. For every Delhi government station, OpenAQ has no data at all from late 2022 to February 2025. We checked the archive listings for all our stations and also queried the API directly. Both came back empty for October–November 2023 and 2024.
-- We downloaded the 2025 data anyway: one file per station per day, 14 September to 1 December 2025, for our 12 stations plus one extra location we suspected was a duplicate. That came to 1,008 daily files; another 19 station-days simply do not exist in the archive (the collection notebook lists them).
-- All three sources were accessed on 31 October 2026 (UTC). The collection notebook ends with a summary table of every source: URL, how we got it, access date, licence, number of files and size.
+- We downloaded the 2025 data anyway: one file per station per day, 14 September to 1 December 2025, for our 12 stations plus one extra location we suspected was a duplicate. That came to 1,008 daily files; another 19 station-days simply do not exist in the archive.
 
 ### PM2.5: CPCB official website (to fill the gap)
 - Because OpenAQ could not give us 2023 and 2024, we went to the original publisher: the Central Pollution Control Board's CAAQMS Data Repository.
@@ -97,7 +96,7 @@
 
 ## 3. Cleaning
 
-All of this is in notebook `02_cleaning.ipynb`. Every step, with what we did, the number of rows it touched and why, is written to `metadata/cleaning_log.csv` (24 steps).
+All of this is in notebook `02_cleaning.ipynb`.
 
 ### Fixing formats and inconsistencies
 - **Column names:** CPCB names carry units in brackets (`PM2.5 (µg/m³)`). We renamed the 7 columns we kept to short names (`pm25`, `st_wind_ms` and so on) and moved the units into the data dictionary. We dropped the other 18 columns (gases, benzene-type compounds, solar radiation), because they are outside our question.
@@ -302,3 +301,7 @@ We compared each Diwali night with the nights 2–7 days before and after, and w
 | Riyan Aggarwal | Data visualisation |
 | Shaurya Gupta | Data collection |
 | Prakhar Srivastava | Data cleaning |
+
+## 10. Use of AI
+
+We planned the complete pipeline from data collection & cleaning to visualisation and used AI agents to write the codes piece by piece. All the decisions regarding how to collect the data, how to detect and remove outliers, how to impute missing values were mostly taken by us.
