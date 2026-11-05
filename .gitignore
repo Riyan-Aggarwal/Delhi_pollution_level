@@ -15,5 +15,6 @@ docs/assets/results.json
 # temporary files
 _incoming_*
 
-# report kept locally
-report/
+# report folder: only the report itself is published; working files stay local
+report/*
+!report/report.md

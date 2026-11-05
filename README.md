@@ -3,7 +3,8 @@
 Course project for **DA2402 Data Curation and Visualisation** at IIT Madras (2026).
 
 **Dashboard:** https://riyan-aggarwal.github.io/Delhi_pollution_level/
-**All charts in one file:** [`dashboard_figures.pdf`](dashboard_figures.pdf)
+**Charts in one file:** [`dashboard_figures.pdf`](dashboard_figures.pdf)
+**Report:** [`report/report.md`](report/report.md)
 
 ## Question
 
@@ -37,7 +38,8 @@ metadata/
   cleaning_log.csv       every cleaning step, the rows it affected and why
   data_dictionary.csv    every column of the final table
 docs/                    the dashboard website
-dashboard_figures.pdf    every dashboard chart with its caption
+dashboard_figures.pdf    the dashboard charts with their captions
+report/report.md         the full report: how we collected, cleaned and analysed the data
 ```
 
 ## How to run
