@@ -162,7 +162,6 @@
     <a class="sec" href="#results">3 Results</a>
     <a class="sec" href="#conclusion">4 Conclusion</a>
     <a class="sec" href="#limits">5 Limitations</a>
-    <a class="sec" href="#credits">Attributions</a>
     <a class="sec" href="#team">Team</a>
     <button class="theme-btn" id="theme-btn" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">
       <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
@@ -216,8 +215,8 @@
       <thead><tr><th>Site</th><th>robots.txt</th><th>Terms of use</th><th>What we did</th></tr></thead>
       <tbody>
         <tr><td><b>CPCB</b></td><td>None published</td><td>Public government data; the download page has a captcha, so automated downloads are clearly not wanted</td><td>Downloaded the 36 files <b>by hand</b>, no scraping</td></tr>
-        <tr><td><b>OpenAQ</b></td><td>None published (API and AWS archive)</td><td>Use the official API or exports, not scraping; credit OpenAQ as the source</td><td>Used the official API with a free key and the public archive; credited below</td></tr>
-        <tr><td><b>Open-Meteo</b></td><td><code>Disallow: /</code> on the API host (aimed at search-engine crawlers)</td><td>Free for non-commercial use under CC BY 4.0, up to 10,000 calls a day</td><td>Made just <b>3 calls</b> through the documented API; credited below</td></tr>
+        <tr><td><b>OpenAQ</b></td><td>None published (API and AWS archive)</td><td>Use the official API or exports, not scraping; credit OpenAQ as the source</td><td>Used the official API with a free key and the public archive</td></tr>
+        <tr><td><b>Open-Meteo</b></td><td><code>Disallow: /</code> on the API host (aimed at search-engine crawlers)</td><td>Free for non-commercial use under CC BY 4.0, up to 10,000 calls a day</td><td>Made just <b>3 calls</b> through the documented API</td></tr>
       </tbody></table></div>
 
     <h3 data-slide>How we cleaned it</h3>
@@ -372,42 +371,6 @@
     </ul>
   </section>
 
-  <section id="credits" data-slide>
-    <h2>Attributions</h2>
-    <div class="cols">
-      <div>
-        <h3>Data</h3>
-        <div class="tablewrap wrap"><table>
-          <thead><tr><th>Source</th><th>Licence / terms</th></tr></thead>
-          <tbody>
-            <tr><td>Central Pollution Control Board (CPCB), CAAQMS Data Repository (CPCB, DPCC, IMD and IITM stations)</td><td>Government of India public data; no licence stated on the repository page</td></tr>
-            <tr><td>OpenAQ, API v3 and AWS open-data archive</td><td>OpenAQ terms of use; attribution to OpenAQ required</td></tr>
-            <tr><td>Open-Meteo Historical Weather API (ERA5 / Copernicus reanalysis)</td><td>CC BY 4.0, free for non-commercial use</td></tr>
-            <tr><td>Map tiles: OpenStreetMap contributors, CARTO</td><td>ODbL (OpenStreetMap); CARTO basemap terms</td></tr>
-          </tbody>
-        </table></div>
-      </div>
-      <div>
-        <h3>Libraries and tools</h3>
-        <div class="tablewrap wrap"><table>
-          <thead><tr><th>Library</th><th>Used for</th><th>Licence</th></tr></thead>
-          <tbody>
-            <tr><td>Python 3</td><td>everything</td><td>PSF</td></tr>
-            <tr><td>pandas</td><td>tables, cleaning, time series</td><td>BSD-3</td></tr>
-            <tr><td>NumPy</td><td>numerical work</td><td>BSD-3</td></tr>
-            <tr><td>SciPy</td><td>chi-square and Mann–Whitney tests</td><td>BSD-3</td></tr>
-            <tr><td>statsmodels</td><td>regression models</td><td>BSD-3</td></tr>
-            <tr><td>Plotly (Python and plotly.js)</td><td>all charts</td><td>MIT</td></tr>
-            <tr><td>requests</td><td>API calls and downloads</td><td>Apache-2.0</td></tr>
-            <tr><td>PyArrow</td><td>Parquet files</td><td>Apache-2.0</td></tr>
-            <tr><td>Jupyter, nbconvert</td><td>notebooks</td><td>BSD-3</td></tr>
-            <tr><td>Public Sans font</td><td>this page</td><td>SIL OFL 1.1</td></tr>
-          </tbody>
-        </table></div>
-      </div>
-    </div>
-  </section>
-
   <section id="team" data-slide>
     <h2>Team contributions</h2>
     <div class="tablewrap wrap"><table>
@@ -421,7 +384,6 @@
   </section>
 </main>
 
-<footer>DA2402 Data Curation and Visualisation, IIT Madras. Code and data: <a href="https://github.com/Riyan-Aggarwal/Delhi_pollution_level">github.com/Riyan-Aggarwal/Delhi_pollution_level</a>.</footer>
 
 <script src="assets/vendor/plotly.min.js"></script>
 <script src="assets/figures.js"></script>
